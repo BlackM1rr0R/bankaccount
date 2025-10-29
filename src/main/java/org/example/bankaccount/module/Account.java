@@ -1,35 +1,24 @@
 package org.example.bankaccount.module;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.example.bankaccount.enums.Status;
 
+import java.time.LocalDateTime;
+
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String accountNumber;
     private String firstName;
     private String lastName;
-    private Double balance;
+    private String email;
     private String password;
+    private LocalDateTime localDateTime;
     @Enumerated(EnumType.STRING)
     private Status status;
-
-
-
-
-
-
-
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 
     public Long getId() {
         return id;
@@ -37,14 +26,6 @@ public class Account {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
     }
 
     public String getFirstName() {
@@ -63,17 +44,35 @@ public class Account {
         this.lastName = lastName;
     }
 
-    public Double getBalance() {
-        return balance;
+    public String getEmail() {
+        return email;
     }
 
-    public void setBalance(Double balance) {
-        this.balance = balance;
+    public void setEmail(String email) {
+        this.email = email;
     }
+
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

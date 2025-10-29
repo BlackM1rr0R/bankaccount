@@ -1,7 +1,5 @@
 package org.example.bankaccount.controller;
 
-import org.example.bankaccount.dao.AccountDTO;
-
 import org.example.bankaccount.module.Account;
 import org.example.bankaccount.service.AccountService;
 import org.springframework.http.ResponseEntity;
@@ -18,55 +16,37 @@ public class AccountController {
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
+
+    // Yeni hesab yaratmaq
     @PostMapping("/create")
-    public ResponseEntity<AccountDTO> createAccount(@RequestBody AccountDTO accountDTO) {
-        return ResponseEntity.ok(accountService.createAccount(accountDTO));
-    }
-    @GetMapping("/all")
-    public List<AccountDTO> getAllAccounts() {
-        return accountService.getAllAccounts();
+    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+        return ResponseEntity.ok(accountService.createAccount(account));
     }
 
+    // Bütün hesabları göstərmək
+    @GetMapping("/all")
+    public ResponseEntity<List<Account>> getAllAccounts() {
+        return ResponseEntity.ok(accountService.getAllAccounts());
+    }
+
+    // ID ilə axtarış
     @GetMapping("/{id}")
-    public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long id) {
+    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
         return accountService.getAccountById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/add/money")
-    public ResponseEntity<AccountDTO> addMoney(@RequestParam String accountNumber, @RequestParam Double money) {
-        return ResponseEntity.ok(accountService.addMoney(accountNumber, money));
+    // Hesabı silmək
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/withdraw/money")
-    public ResponseEntity<AccountDTO> withdrawMoney(@RequestParam String accountNumber, @RequestParam Double money) {
-        return ResponseEntity.ok(accountService.withdrawMoney(accountNumber, money));
-
-    }
-
-    @PostMapping("/transfer/money")
-    public ResponseEntity<Void> transferMoney(@RequestParam String fromAccountNumber,@RequestParam String toAccountNumber, @RequestParam Double money) {
-        accountService.transferMoney(fromAccountNumber, toAccountNumber, money);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/balance")
-    public ResponseEntity<Double> getBalance(@RequestParam String accountNumber) {
-        Double balance = accountService.getBalance(accountNumber);
-        return ResponseEntity.ok(balance);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<Void> deleteAccount(@RequestParam String accountNumber) {
-        accountService.deleteAccount(accountNumber);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/control/{id}")
-    public ResponseEntity<Account> getControlAccount(@PathVariable Long id) {
-        Account account=accountService.getControlAccount(id);
-        return ResponseEntity.ok(account);
-
+    // Hesab statusunu dəyişmək (məsələn: ACTIVE → INACTIVE)
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Account> updateStatus(@PathVariable Long id, @RequestParam String status) {
+        return ResponseEntity.ok(accountService.updateStatus(id, status));
     }
 }
